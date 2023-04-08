@@ -1,12 +1,11 @@
 <!-- VARIABLES
 SERVICE
 PROJECT
-OWNER
 REPOSITORY
 ORGANIZATION
 -->
 
-# Network infrastructure
+# SERVICE infrastructure
 
 ## À propos
 
