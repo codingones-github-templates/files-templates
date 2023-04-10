@@ -106,8 +106,8 @@ Pour que les modifications de la description de l'infrastructure soient appliqu√
     - Groupe : `SERVICE.deployer`
 - [Terraform Cloud](https://app.terraform.io/) est la plateforme propos√©e par HashiCorp pour administrer les modifications d'infrastructure
     - Organisation : [ORGANIZATION](https://app.terraform.io/app/ORGANIZATION/workspaces)
-    - Workspaces : `SERVICE-*`
-        - [SERVICE-production](https://app.terraform.io/app/ORGANIZATION/workspaces/SERVICE-production)
+    - Workspaces : `SERVICE`
+        - [SERVICE-production](https://app.terraform.io/app/ORGANIZATION/workspaces/SERVICE)
     - Variables
         - `AWS_SECRET_ACCESS_KEY`
             - Value : Sensitive - write only
