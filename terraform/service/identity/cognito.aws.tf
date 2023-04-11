@@ -1,10 +1,9 @@
 #<!-- VARIABLES
-#SERVICE
 #USER_GROUP_ADMIN_NAME
 #USER_GROUP_USER_NAME
 #-->
 resource "aws_cognito_user_pool" "main" {
-  name = "SERVICE-user-pool"
+  name = "${var.service}-user-pool"
 
   account_recovery_setting {
     recovery_mechanism {
@@ -40,7 +39,7 @@ resource "aws_cognito_user_pool" "main" {
 }
 
 resource "aws_cognito_user_pool_client" "user_pool_client" {
-  name         = "SERVICE-user-pool-client"
+  name         = "${var.service}-user-pool-client"
   user_pool_id = aws_cognito_user_pool.main.id
 
   token_validity_units {
@@ -56,12 +55,14 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   explicit_auth_flows = ["ALLOW_REFRESH_TOKEN_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_CUSTOM_AUTH", "ALLOW_USER_SRP_AUTH"]
 }
 
+
 resource "aws_cognito_user_group" "admin" {
-  name         = "USER_GROUP_ADMIN_NAME"
+  name         = var.user_group_admin
   user_pool_id = aws_cognito_user_pool.main.id
 }
 
+
 resource "aws_cognito_user_group" "user" {
-  name         = "USER_GROUP_USER_NAME"
+  name         = var.user_group_user
   user_pool_id = aws_cognito_user_pool.main.id
 }
