@@ -17,9 +17,16 @@ terraform {
     aws = {
       source = "hashicorp/aws"
     }
+    tfe = {
+      source = "hashicorp/tfe"
+    }
   }
 }
 
 provider "aws" {
   region = "AWS_PROVIDER_REGION"
+}
+
+provider "tfe" {
+  token = var.tfe_token
 }

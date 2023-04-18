@@ -22,7 +22,7 @@
 #TODO Merge with alternating subnet for now ?
 resource "aws_db_subnet_group" "private_subnets_group" {
   name       = "private-subnets-for-rds"
-  subnet_ids = var.private_subnets_id //[data.aws_subnet.private_subnets.0.id, data.aws_subnet.private_subnets.1.id]
+  subnet_ids = var.privates_subnets_ids //[data.aws_subnet.private_subnets.0.id, data.aws_subnet.private_subnets.1.id]
 }
 
 
