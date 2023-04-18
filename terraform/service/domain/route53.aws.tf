@@ -13,7 +13,8 @@ resource "aws_route53domains_registered_domain" "registered_domain" {
     }
   }
 
-  auto_renew = true
+  auto_renew    = true
+  transfer_lock = false
 
   tags = local.tags
 }
@@ -43,29 +44,3 @@ resource "aws_route53_record" "certificate_validation_main" {
   records         = [sort(aws_acm_certificate.acm_certificate.domain_validation_options[*].resource_record_value)[0]]
   allow_overwrite = true
 }
-
-
-
-#resource "aws_route53_record" "taxi_aymeric_record_ipv4" {
-#  name    = aws_route53_zone.hosting_zone.name
-#  zone_id = aws_route53_zone.hosting_zone.zone_id
-#  type    = "A"
-#
-#  alias {
-#    name                   = aws_cloudfront_distribution.taxi_aymeric.domain_name
-#    zone_id                = aws_cloudfront_distribution.taxi_aymeric.hosted_zone_id
-#    evaluate_target_health = false
-#  }
-#}
-#
-#resource "aws_route53_record" "driver_record_ipv6" {
-#  name    = aws_route53_zone.hosting_zone.name
-#  zone_id = aws_route53_zone.hosting_zone.zone_id
-#  type    = "AAAA"
-#
-#  alias {
-#    name                   = aws_cloudfront_distribution.taxi_aymeric.domain_name
-#    zone_id                = aws_cloudfront_distribution.taxi_aymeric.hosted_zone_id
-#    evaluate_target_health = false
-#  }
-#}

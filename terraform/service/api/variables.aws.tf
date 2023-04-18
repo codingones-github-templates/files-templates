@@ -10,15 +10,22 @@ variable "service" {
   description = "The name of the service that will be run on the environment"
 }
 
-variable "user_group_admin" {
-  type        = string
-  nullable    = false
-  description = "The user group admin name"
-  default     = "admin"
+variable "task_definition_execution_role_arn" {
+  default = ""
 }
-variable "user_group_user" {
-  type        = string
-  nullable    = false
-  description = "The user group user name"
-  default     = "user"
+
+variable "db_connexion_string" {
+  default = ""
+}
+
+variable "project_vpc_id" {
+  default = ""
+}
+
+variable "private_subnets_ids" {
+  default = ""
+}
+
+variable "public_subnets_id" {
+  default = ""
 }

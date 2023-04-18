@@ -10,15 +10,14 @@ variable "service" {
   description = "The name of the service that will be run on the environment"
 }
 
-variable "user_group_admin" {
-  type        = string
+variable "private_subnets_id" {
+  type        = list(string)
   nullable    = false
-  description = "The user group admin name"
-  default     = "admin"
+  description = "The ids of the project vpc private subnets where the db instance is hosted"
 }
-variable "user_group_user" {
+
+variable "vpc_id" {
   type        = string
   nullable    = false
-  description = "The user group user name"
-  default     = "user"
+  description = "The id of the project vpc"
 }

@@ -8,7 +8,6 @@ variable "service" {
   type        = string
   nullable    = false
   description = "The name of the service that will be run on the environment"
-  default     = "client"
 }
 
 variable "domain_names" {
@@ -16,6 +15,14 @@ variable "domain_names" {
   nullable    = true
   description = "The project registered domain name that cloudfront can use as aliases, for now only one domain is supported"
   default     = false
+}
+
+variable "hosting_zone_name" {
+  default = ""
+}
+
+variable "hosting_zone_id" {
+  default = ""
 }
 
 variable "api_endpoint" {
