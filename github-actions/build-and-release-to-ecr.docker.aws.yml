@@ -1,0 +1,56 @@
+name: Build and release the container to ECR.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  # TODO Add standard application build/validate/release/run CI
+  build-and-upload-application-bundle:
+    uses: romain-cambonie/serenity-workflows/.github/workflows/_build-and-upload-artifact.reusable.yml@master
+    with:
+      node-version: 'lts/*'
+      package-manager: 'npm'
+      package-manager-dependencies-command: 'npm install'
+      build-command: 'run build'
+      out-dir: 'build'
+
+
+  build-and-push-docker-image:
+    name: Build Docker image and push to registry if on master branch
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-upload-application-bundle
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download application build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: bundle
+          path: .
+
+      # TODO Get credentials from  api.deployer PROJECT.api.ci user
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1"
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: 'PROJECT'
+          IMAGE_TAG: 'GET FROM SEMANTIC RELEASE'
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
