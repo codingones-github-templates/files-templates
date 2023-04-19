@@ -1,17 +1,15 @@
-data "aws_secretsmanager_secret" "rds_password_secret" {
-  arn = aws_db_instance.rds_instance.master_user_secret[0]["secret_arn"]
-}
-
-data "aws_secretsmanager_secret_version" "rds_password_secret_version" {
-  secret_id = data.aws_secretsmanager_secret.rds_password_secret.id
-}
-
 locals {
   export_as_organization_variable = {
-    "db_connexion_string" = {
+    "cognito_authorizer_issuer" = {
       hcl       = false
-      sensitive = true
-      value     = "postgres://${aws_db_instance.rds_instance.username}:${jsondecode(data.aws_secretsmanager_secret_version.rds_password_secret_version.secret_string)["password"]}@${aws_db_instance.rds_instance.endpoint}/${aws_db_instance.rds_instance.db_name}"
+      sensitive = false
+      #value     = "https://cognito-idp.us-east-1.amazonaws.com/${tolist(data.aws_cognito_user_pools.taxi-aymeric-user-pool.ids)[0]}"
+      value = "https://cognito-idp.us-east-1.amazonaws.com/${aws_cognito_user_pool.main.id}"
+    }
+    "cognito_authorizer_audience" = {
+      hcl       = true
+      sensitive = false
+      value     = [aws_cognito_user_pool_client.user_pool_client.id]
     }
   }
 }
