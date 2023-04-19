@@ -23,7 +23,7 @@ variable "service" {
   description = "The name of the service that will be run on the environment"
 }
 
-variable "privates_subnets_ids" {
+variable "private_subnets_ids" {
   type        = list(string)
   nullable    = false
   description = "The ids of the project vpc private subnets where the db instance is hosted"

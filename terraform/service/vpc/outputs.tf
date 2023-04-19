@@ -4,9 +4,13 @@ locals {
       hcl   = false
       value = aws_vpc.vpc.id
     }
-    "privates_subnets_ids" = {
+    "private_subnets_ids" = {
       hcl   = true
       value = [aws_subnet.private_1.id, aws_subnet.private_2.id]
+    }
+    "public_subnets_ids" = {
+      hcl   = true
+      value = [aws_subnet.public_1.id, aws_subnet.public_2.id]
     }
   }
 }
