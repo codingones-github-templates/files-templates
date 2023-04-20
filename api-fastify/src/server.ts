@@ -21,11 +21,8 @@ server.get('/health', async (_request, _reply) => {
 })
 
 server.get('/database-status', async (_request , reply) => {
-    const infos: PgInfos[] | Error = await getDatabaseInfos(server.pg)();
-
-    infos instanceof Error
-        ? reply.send(infos)
-        : reply.send(infos);
+    const infos: PgInfos | Error = await getDatabaseInfos(server.pg)();
+    reply.send(infos);
 })
 
 start({server, process});

@@ -1,32 +1,31 @@
 import type {PostgresDb} from "@fastify/postgres";
 
-type PgInfos = {
-    size: number;
+export type PgInfos = {
+    databaseSize: number;
     numberOfConnexions: number;
     numberOfActiveConnexions: number;
-    listOfAllPublicTables: string[];
+    listOfAllPublicTables: string;
 }
 
-export const getDatabaseInfos = (db: PostgresDb) => async (): Promise<PgInfos[] | Error>  => {
+export const getDatabaseInfos = (db: PostgresDb) => async (): Promise<PgInfos | Error>  => {
     const client = await db.connect();
     try {
         const [size, numberOfConnexions,
             numberOfActiveConnexions,
             listOfAllPublicTables] = await Promise.all([
-            client.query(getDatabaseSize).rows,
-        client.query(getDatabaseNumberOfConnections).rows,
-        client.query(getDatabaseNumberOfActiveConnections).rows,
-        client.query(listAllTableNames).rows,
+            client.query(getDatabaseSize),
+            client.query(getDatabaseNumberOfConnections),
+            client.query(getDatabaseNumberOfActiveConnections),
+            client.query(listAllTableNames),
         ])
 
         return {
-            size,
-            numberOfConnexions,
-            numberOfActiveConnexions,
-            listOfAllPublicTables
+            databaseSize: size.rows[0],
+            numberOfConnexions: numberOfConnexions.rows[0],
+            numberOfActiveConnexions: numberOfActiveConnexions.rows[0],
+            listOfAllPublicTables: JSON.stringify(listOfAllPublicTables.rows)
         };
-    }
-    catch (error: unknown) {
+    } catch (error: unknown) {
         return new Error((error as Error).message);
     } finally {
         client.release()
