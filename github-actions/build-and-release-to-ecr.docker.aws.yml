@@ -1,3 +1,7 @@
+#<!-- VARIABLES
+#SERVICE
+#ORGANIZATION
+#-->
 name: Build and release the container to ECR.
 
 on:
@@ -9,13 +13,31 @@ on:
 jobs:
   # TODO Add standard application build/validate/release/run CI
   build-and-upload-application-bundle:
-    uses: romain-cambonie/serenity-workflows/.github/workflows/_build-and-upload-artifact.reusable.yml@master
-    with:
-      node-version: 'lts/*'
-      package-manager: 'npm'
-      package-manager-dependencies-command: 'npm install'
-      build-command: 'run build'
-      out-dir: 'build'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+
+      - name: Install dependencies (prefer frozen)
+        run: 'npm install'
+
+      - name: Build
+        run: 'npm run build'
+
+      - name: Upload build bundle as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundle
+          path: |
+            package.json
+            package-lock.json
+            build
 
 
   build-and-push-docker-image:
@@ -25,8 +47,16 @@ jobs:
       - build-and-upload-application-bundle
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo with complete history
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
 
       - name: Download application build artifact
         uses: actions/download-artifact@v3
@@ -34,23 +64,19 @@ jobs:
           name: bundle
           path: .
 
-      # TODO Get credentials from  api.deployer PROJECT.api.ci user
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: "us-east-1"
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push docker image to Amazon ECR
+      - name: Link the semantic release config and release
         env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: 'PROJECT'
-          IMAGE_TAG: 'GET FROM SEMANTIC RELEASE'
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          npm install @rimac-technology/semantic-release-ecr
+          npx semantic-release
+
+      - name: Trigger infrastructure workflow to redeploy service
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          repository: ORGANIZATION/SERVICE-infrastructure
+          event-type: remote-trigger

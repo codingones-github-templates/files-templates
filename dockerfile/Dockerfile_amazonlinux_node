@@ -7,6 +7,6 @@ WORKDIR /usr/src/app
 COPY ./build /usr/src/app/build
 COPY ./package.json /usr/src/app/package.json
 COPY ./package-lock.json /usr/src/app/package-lock.json
-RUN npm ci --only=production
+RUN npm ci --only=production --omit=dev
 EXPOSE 80
 CMD ["node", "--experimental-specifier-resolution=node", "build/server.js"]
