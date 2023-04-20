@@ -27,29 +27,34 @@ variable "domain_names" {
   type        = string
   nullable    = true
   description = "The project registered domain name that cloudfront can use as aliases, for now only one domain is supported"
-  default     = false
+  default     = ""
 }
 
 variable "hosting_zone_name" {
-  default = ""
+  type        = string
+  nullable    = true
+  description = "The name of the route53 hosting zone"
+  default     = false
 }
 
 variable "hosting_zone_id" {
-  default = ""
+  type        = string
+  nullable    = true
+  description = "The id of the route53 hosting zone"
+  default     = false
 }
 
 variable "api_endpoint" {
   type        = string
-  nullable    = true
+  nullable    = false
   description = "The project api endpoint origin that get forwarded to an api gateway, for now only one endpoint is supported"
-  default     = "https://fakeapi.com"
 }
 
 variable "acm_certificate_arn" {
   type        = string
   nullable    = true
   description = "The project certificate ARN for your domain. Leave empty to use the cloudfront certificate (need to use the cloudfront domain too)"
-  default     = false
+  default     = ""
 }
 
 variable "content_security_policy_client" {
