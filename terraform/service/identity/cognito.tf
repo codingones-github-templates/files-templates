@@ -27,7 +27,7 @@ resource "aws_cognito_user_pool" "main" {
   email_configuration {
     #email_sending_account = "DEVELOPER"
     #source_arn = "ARN of the SES verified email identity to use."
-    configuration_set      = var.ses_configuration_set_name
+    configuration_set      = length(var.ses_configuration_set_name) > 0 ? var.ses_configuration_set_name : null
     from_email_address     = "${var.project} Identity Service <identity+noreply@${var.domain_name}>"
     reply_to_email_address = "${var.project} Support Service <support@${var.domain_name}>"
   }

@@ -37,9 +37,9 @@ variable "domain_name" {
 #  default     = false
 #}
 #
-#variable "hosting_zone_id" {
-#  type        = string
-#  nullable    = false
-#  description = "The id of the route53 hosting zone"
-#  default     = false
-#}
+variable "hosting_zone_id" {
+  type        = string
+  nullable    = false
+  description = "The id of the route53 hosting zone"
+  default     = false
+}
