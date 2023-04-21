@@ -11,8 +11,10 @@ on:
   workflow_dispatch:
     inputs:
       force-replace:
+        description: 'Resource address to force replace during Terraform apply. Example: aws_s3_bucket.example'
         type: string
         required: false
+        default: ''
 
   push:
     branches:
