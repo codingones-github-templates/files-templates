@@ -9,6 +9,11 @@ concurrency:
 
 on:
   workflow_dispatch:
+    inputs:
+      force-replace:
+        type: string
+        required: false
+
   push:
     branches:
       - main
@@ -45,3 +50,16 @@ jobs:
         run: |
           echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && steps.setup.outputs.force-replace == ''
+        run: |
+          echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
+          terraform apply -auto-approve -input=false
+
+      - name: Terraform Apply with force replace ${{ inputs.force-replace }}
+        if: github.ref == 'refs/heads/main' && steps.setup.outputs.force-replace != ''
+        run: |
+          echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
+          terraform apply -auto-approve -input=false -replace=${{ inputs.force-replace }}
+
