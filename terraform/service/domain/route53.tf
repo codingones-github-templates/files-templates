@@ -34,7 +34,7 @@ resource "aws_route53_record" "main_name_servers_record" {
   records         = aws_route53_zone.hosting_zone.name_servers
 }
 
-
+# TODO Rework necessary because it choose the first domain in the domain list, problematic when swapping domains
 resource "aws_route53_record" "certificate_validation_main" {
   name            = tolist(aws_acm_certificate.acm_certificate.domain_validation_options)[0].resource_record_name
   depends_on      = [aws_acm_certificate.acm_certificate]

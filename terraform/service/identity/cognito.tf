@@ -36,6 +36,11 @@ resource "aws_cognito_user_pool" "main" {
     reply_to_email_address = local.has_SES_valid_configuration ? "support@${var.domain_name}" : null
   }
 
+  sms_configuration {
+    external_id    = "cognito-sms"
+    sns_caller_arn = aws_iam_role.cognito_sns_role.arn
+  }
+
   //  sms_authentication_message = "Votre code d'authentification est {####}"
   //  sms_verification_message   = "Votre identifiant est {username} et votre code temporaire est {####}"
 

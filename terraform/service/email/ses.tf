@@ -7,7 +7,7 @@ resource "aws_sesv2_email_identity" "email_identity" {
 }
 
 resource "aws_sesv2_configuration_set" "ses_configuration" {
-  count = aws_sesv2_email_identity.email_identity.dkim_signing_attributes[0].status == "SUCCESS" ? 1 : 0
+  count = var.ses_domain_verification_success ? 1 : 0
 
   configuration_set_name = "project_configuration_set"
 
