@@ -1,7 +1,3 @@
-#<!-- VARIABLES
-#USER_GROUP_ADMIN_NAME
-#USER_GROUP_USER_NAME
-#-->
 resource "aws_cognito_user_pool" "main" {
   name = "${var.service}-user-pool"
 
@@ -29,7 +25,11 @@ resource "aws_cognito_user_pool" "main" {
   // }
 
   email_configuration {
-    email_sending_account = "COGNITO_DEFAULT"
+    #email_sending_account = "DEVELOPER"
+    #source_arn = "ARN of the SES verified email identity to use."
+    configuration_set      = var.ses_configuration_set_name
+    from_email_address     = "${var.project} Identity Service <identity+noreply@${var.domain_name}>"
+    reply_to_email_address = "${var.project} Support Service <support@${var.domain_name}>"
   }
 
   //  sms_authentication_message = "Votre code d'authentification est {####}"

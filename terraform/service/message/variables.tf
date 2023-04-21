@@ -30,23 +30,16 @@ variable "domain_name" {
   default     = ""
 }
 
-# todo passer en map pour faire un foreach avec les propriétés du groupe)
-variable "user_group_admin" {
-  type        = string
-  nullable    = false
-  description = "The user group admin name"
-  default     = "admin"
-}
-variable "user_group_user" {
-  type        = string
-  nullable    = false
-  description = "The user group user name"
-  default     = "user"
-}
-
-variable "ses_configuration_set_name" {
-  type        = string
-  nullable    = false
-  description = "The ses email configuration set name"
-  default     = ""
-}
+#variable "hosting_zone_name" {
+#  type        = string
+#  nullable    = false
+#  description = "The name of the route53 hosting zone"
+#  default     = false
+#}
+#
+#variable "hosting_zone_id" {
+#  type        = string
+#  nullable    = false
+#  description = "The id of the route53 hosting zone"
+#  default     = false
+#}
