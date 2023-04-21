@@ -1,3 +1,7 @@
+locals {
+  has_SES_valid_configuration = length(var.ses_configuration_set_name) > 0 && length(var.ses_verified_email_identity_source_arn) > 0
+}
+
 resource "aws_cognito_user_pool" "main" {
   name = "${var.service}-user-pool"
 
@@ -25,11 +29,11 @@ resource "aws_cognito_user_pool" "main" {
   // }
 
   email_configuration {
-    #email_sending_account = "DEVELOPER"
-    #source_arn = "ARN of the SES verified email identity to use."
-    configuration_set      = length(var.ses_configuration_set_name) > 0 ? var.ses_configuration_set_name : null
+    email_sending_account  = local.has_SES_valid_configuration ? "DEVELOPER" : "COGNITO_DEFAULT"
+    source_arn             = local.has_SES_valid_configuration ? var.ses_verified_email_identity_source_arn : null
+    configuration_set      = local.has_SES_valid_configuration ? var.ses_configuration_set_name : null
     from_email_address     = "${var.project} Identity Service <identity+noreply@${var.domain_name}>"
-    reply_to_email_address = "${var.project} Support Service <support@${var.domain_name}>"
+    reply_to_email_address = "support@${var.domain_name}"
   }
 
   //  sms_authentication_message = "Votre code d'authentification est {####}"

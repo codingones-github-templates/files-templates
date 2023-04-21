@@ -46,7 +46,14 @@ variable "user_group_user" {
 
 variable "ses_configuration_set_name" {
   type        = string
-  nullable    = false
+  nullable    = true
+  description = "The ses email configuration set name"
+  default     = ""
+}
+
+variable "ses_verified_email_identity_source_arn" {
+  type        = string
+  nullable    = true
   description = "The ses email configuration set name"
   default     = ""
 }
