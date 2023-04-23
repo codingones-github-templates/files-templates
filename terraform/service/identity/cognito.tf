@@ -38,7 +38,7 @@ resource "aws_cognito_user_pool" "main" {
     default_email_option = "CONFIRM_WITH_CODE"
     email_message        = "Votre code de vérification est le {####}."
     email_subject        = "Bienvenue chez ${var.project}, confirmez votre compte !"
-    sms_message          = "Votre code de vérification est le {####}."
+    sms_message          = "${var.project} - Votre code de vérification est le {####}"
   }
 
   sms_configuration {
@@ -46,7 +46,7 @@ resource "aws_cognito_user_pool" "main" {
     sns_caller_arn = aws_iam_role.cognito_sns_role.arn
   }
 
-//  sms_authentication_message = "Votre code d'authentification est {####}"
+  //  sms_authentication_message = "Votre code d'authentification est {####}"
   //  sms_verification_message   = "Votre identifiant est {username} et votre code temporaire est {####}"
 
   tags = local.tags
