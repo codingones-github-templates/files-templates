@@ -19,9 +19,7 @@ resource "aws_cognito_user_pool" "main" {
 
   username_attributes = ["email", "phone_number"]
 
-  auto_verified_attributes = [/*"phone_number",*/ "email"]
-
-  //  deletion_protection = "INACTIVE"
+  auto_verified_attributes = ["phone_number", "email"]
 
   // device_configuration {
   //   challenge_required_on_new_device      = true
@@ -48,7 +46,7 @@ resource "aws_cognito_user_pool" "main" {
     sns_caller_arn = aws_iam_role.cognito_sns_role.arn
   }
 
-  //  sms_authentication_message = "Votre code d'authentification est {####}"
+//  sms_authentication_message = "Votre code d'authentification est {####}"
   //  sms_verification_message   = "Votre identifiant est {username} et votre code temporaire est {####}"
 
   tags = local.tags
