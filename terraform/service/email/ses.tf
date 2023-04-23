@@ -33,3 +33,29 @@ resource "aws_sesv2_configuration_set" "ses_configuration" {
 
   tags = local.tags
 }
+
+
+resource "aws_ses_receipt_rule_set" "rule_set" {
+  rule_set_name = "email_forwarding_rule_set"
+}
+
+resource "aws_ses_receipt_rule" "email_forwarding" {
+  name          = "email_forwarding"
+  rule_set_name = aws_ses_receipt_rule_set.rule_set.rule_set_name
+  recipients    = ["${var.domain_name}"]
+  enabled       = true
+
+  s3_action {
+    position        = 1
+    bucket_name    = aws_lambda_function.email_forwarding.arn
+    object_key_prefix = "emails/"
+  }
+
+  lambda_action {
+    position        = 2
+    function_arn    = aws_lambda_function.email_forwarding.arn
+    invocation_type = "Event"
+  }
+
+  depends_on = [aws_lambda_permission.allow_ses]
+}

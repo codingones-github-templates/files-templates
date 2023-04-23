@@ -57,3 +57,10 @@ variable "ses_verified_email_identity_source_arn" {
   description = "The ses email configuration set name"
   default     = ""
 }
+
+variable "sender_id" {
+  type        = string
+  nullable    = true
+  description = "Sender id. Maximum 11 alphanumeric or hyphen (-) characters, including at least one letter and no spaces. It has to start and end with an alphanumeric character. "
+  default     = ""
+}

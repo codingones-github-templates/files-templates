@@ -1,8 +1,7 @@
 name: Clone angular template
 
 on:
-  create:
-  push:
+  workflow_dispatch:
 
 jobs:
   clone-template:

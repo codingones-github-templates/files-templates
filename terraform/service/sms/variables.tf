@@ -30,24 +30,9 @@ variable "domain_name" {
   default     = ""
 }
 
-variable "ses_domain_verification_success" {
-  type        = bool
+variable "sender_id" {
+  type        = string
   nullable    = true
-  description = "Domain is verified by SES"
-  default     = false
-}
-
-
-variable "hosting_zone_id" {
-  type        = string
-  nullable    = false
-  description = "The id of the route53 hosting zone"
-  default     = false
-}
-
-variable "domain_email_forward_addresses" {
-  type        = string
-  nullable    = false
-  description = "The emails addresses to forward the emails sent to the ses verified domain"
-  default     = "['email1@mail.com','email2@mail.com']"
+  description = "Your sender ID can contain up to 11 alphanumeric or hyphen (-) characters. It has to contain at least one letter, and it can't consist only of numbers. It has to start and end with with an alphanumeric character. Some countries and regions may have additional restrictions."
+  default     = true
 }
