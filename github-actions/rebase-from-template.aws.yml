@@ -1,0 +1,49 @@
+name: Rebase on Template Repository and Create Pull Request
+
+on:
+  workflow_dispatch:
+
+jobs:
+  rebase_on_template:
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Add template repository as remote and fetch
+        run: |
+          git remote add template https://github.com/codingones/angular-template.git
+          git fetch template
+
+    # TODO Replace some var (PROJECT PROJECT_PRETTY ABOUT)
+
+      - name: Create a new branch for the rebase
+        run: |
+          git checkout -b rebase-on-template
+
+      - name: Rebase on template repository
+        run: |
+          git rebase template/main
+
+      - name: Push the new branch to the current repository
+        run: |
+          git push origin rebase-on-template
+
+      - name: Create a pull request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: Rebase on template repository
+          body: This pull request rebases the current repository on the template repository.
+          branch: rebase-on-template
+          labels: rebase,template
