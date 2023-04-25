@@ -13,7 +13,7 @@ exports.handler = function(event, context, callback) {
         config: {
             fromEmail: "noreply@DOMAIN",
             emailBucket: "BUCKET",
-            emailKeyPrefix: "DOMAIN - ",
+            emailKeyPrefix: "",
             forwardMapping: {
                 "@DOMAIN": EMAILS
             }
