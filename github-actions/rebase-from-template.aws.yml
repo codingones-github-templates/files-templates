@@ -32,18 +32,41 @@ jobs:
         run: |
           git checkout -b rebase-on-template
 
-      - name: Rebase on template repository
+      - name: Check if branch "rebase-on-template" already exists on remote, if it doesnt push.
+        run: |
+          response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/${{ github.repository }}/branches/rebase-on-template)
+          if [[ $response == *"Not Found"* ]]; then
+            echo "Branch does not exist."
+            git push origin rebase-on-template
+          else
+            echo "Branch exists."
+          fi
+
+      - name: Try rebasing on template repository
+        continue-on-error: true
+        id: try-rebase
         run: |
           git rebase template/main
 
+      - name: Create a failure pull request
+        if: steps.try-rebase.outcome == 'failure'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: Resolve rebase conflicts locally
+          body: This pull request needs manual intervention to resolve conflicts before rebasing on the template repository.
+          branch: rebase-on-template
+          labels: rebase,template
+
       - name: Push the new branch to the current repository
+        if: steps.try-rebase.outcome == 'success'
         run: |
           git push origin rebase-on-template
 
-      - name: Create a pull request
+      - name: Create a success pull request
+        if: steps.try-rebase.outcome == 'success'
         uses: peter-evans/create-pull-request@v5
         with:
-          title: Rebase on template repository
-          body: This pull request rebases the current repository on the template repository.
+          title: Review rebase changes
+          body: This pull request contains changes from the rebase on the template repository. Please review them before merging.
           branch: rebase-on-template
           labels: rebase,template
