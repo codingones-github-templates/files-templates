@@ -15,58 +15,36 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Configure Git
+      - name: Checkout rebase branch
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git checkout -b rebase-on-template
+
+      - name: Configure git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
       - name: Add template repository as remote and fetch
         run: |
           git remote add template https://github.com/codingones/angular-template.git
           git fetch template
 
-    # TODO Replace some var (PROJECT PROJECT_PRETTY ABOUT)
-
-      - name: Create a new branch for the rebase
-        run: |
-          git checkout -b rebase-on-template
-
-      - name: Check if branch "rebase-on-template" already exists on remote, if it doesnt push.
-        run: |
-          response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/${{ github.repository }}/branches/rebase-on-template)
-          if [[ $response == *"Not Found"* ]]; then
-            echo "Branch does not exist."
-            git push origin rebase-on-template
-          else
-            echo "Branch exists."
-          fi
-
       - name: Try rebasing on template repository
-        continue-on-error: true
-        id: try-rebase
         run: |
-          git rebase template/main
+          git rebase -Xtheirs template/squashed
 
-      - name: Create a failure pull request
-        if: steps.try-rebase.outcome == 'failure'
+      - name: Success - Push the new branch to the current repository
+        run: |
+          git push origin rebase-on-template --force
+
+      - name: Create pull request
         uses: peter-evans/create-pull-request@v5
         with:
-          title: Resolve rebase conflicts locally
-          body: This pull request needs manual intervention to resolve conflicts before rebasing on the template repository.
-          branch: rebase-on-template
-          labels: rebase,template
-
-      - name: Push the new branch to the current repository
-        if: steps.try-rebase.outcome == 'success'
-        run: |
-          git push origin rebase-on-template
-
-      - name: Create a success pull request
-        if: steps.try-rebase.outcome == 'success'
-        uses: peter-evans/create-pull-request@v5
-        with:
+          token: ${{ secrets.PAT_TOKEN }}
           title: Review rebase changes
           body: This pull request contains changes from the rebase on the template repository. Please review them before merging.
           branch: rebase-on-template
+          base: main
           labels: rebase,template
