@@ -78,5 +78,5 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.PAT_TOKEN }}
-          repository: ORGANIZATION/SERVICE-infrastructure
+          repository: ORGANIZATION/registry-infrastructure
           event-type: remote-trigger
