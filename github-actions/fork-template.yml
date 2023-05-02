@@ -1,0 +1,123 @@
+#name: Rebase on Template Repository and Create Pull Request
+#
+#on:
+#  workflow_dispatch:
+#
+#jobs:
+#  rebase_on_template:
+#    runs-on: ubuntu-latest
+#
+#    env:
+#      GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+#
+#    steps:
+#      - name: Checkout current repository
+#        uses: actions/checkout@v3
+#        with:
+#          fetch-depth: 0
+#          token: ${{ secrets.PAT_TOKEN }}
+#
+#      - name: Checkout rebase branch
+#        run: |
+#          git checkout -b rebase-on-template
+#
+#      - name: Configure git
+#        run: |
+#          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#          git config --global user.name "github-actions[bot]"
+#
+#      - name: Add template repository as remote and fetch
+#        run: |
+#          git remote add template https://github.com/codingones/angular-template.git
+#          git fetch template
+#
+#      - name: Try rebasing on template repository
+#        run: |
+#          git rebase -Xtheirs template/squashed
+#
+#      - name: Success - Push the new branch to the current repository
+#        run: |
+#          git push origin rebase-on-template --force
+#
+#      - name: Create pull request
+#        uses: peter-evans/create-pull-request@v5
+#        with:
+#          token: ${{ secrets.PAT_TOKEN }}
+#          title: Review rebase changes
+#          body: This pull request contains changes from the rebase on the template repository. Please review them before merging.
+#          branch: rebase-on-template
+#          base: main
+#          labels: rebase,template
+
+#name: Fork Repository
+#
+#on:
+#  workflow_dispatch:
+#
+#jobs:
+#  fork_repository:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout current repository
+#        uses: actions/checkout@v3
+#        with:
+#          fetch-depth: 0
+#          token: ${{ secrets.PAT_TOKEN }}
+#
+#      - name: Configure Git
+#        run: |
+#          git config user.email "github-actions[bot]@users.noreply.github.com"
+#          git config --global user.name "github-actions[bot]"
+#
+#      - name: Clone source repository and push to new repository
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+#          SOURCE_REPO: "codingones/angular-template"
+#          TARGET_REPO: "ORGANIZATION/REPOSITORY"
+#        run: |
+#          # Clone the source repository
+#          git clone https://github.com/$SOURCE_REPO.git source-repo
+#
+#          # Change to the source repository directory
+#         cd source-repo
+#
+#          # Rename the origin remote to upstream
+#          git remote rename origin upstream
+#
+#          # Add the new repository as a remote (origin)
+#          git remote add origin https://$GITHUB_TOKEN@github.com/$TARGET_REPO.git
+#
+#          # Push the source repository content to the new repository
+#          git push origin main
+
+name: Fork Repository
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fork_repository:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup gh CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+
+      - name: Authenticate gh CLI
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          gh auth login --with-token <<< "$GITHUB_TOKEN"
+
+      - name: Fork Repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          SOURCE_REPO: "codingones/angular-template"
+        run: |
+          # Fork the source repository
+          gh repo fork https://github.com/$SOURCE_REPO --clone=true --remote=true
+
+
