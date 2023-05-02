@@ -23,6 +23,8 @@ resource "aws_route53_zone" "hosting_zone" {
   name              = var.domain_name
   delegation_set_id = aws_route53_delegation_set.domain_delegation_set.id
   tags              = local.tags
+
+  depends_on = [aws_route53domains_registered_domain.registered_domain]
 }
 
 resource "aws_route53_record" "main_name_servers_record" {
@@ -32,15 +34,23 @@ resource "aws_route53_record" "main_name_servers_record" {
   type            = "NS"
   zone_id         = aws_route53_zone.hosting_zone.zone_id
   records         = aws_route53_zone.hosting_zone.name_servers
+
+  depends_on = [aws_route53_zone.hosting_zone]
 }
 
-# TODO Rework necessary because it choose the first domain in the domain list, problematic when swapping domains
-resource "aws_route53_record" "certificate_validation_main" {
-  name            = tolist(aws_acm_certificate.acm_certificate.domain_validation_options)[0].resource_record_name
-  depends_on      = [aws_acm_certificate.acm_certificate]
-  zone_id         = aws_route53_zone.hosting_zone.zone_id
-  type            = tolist(aws_acm_certificate.acm_certificate.domain_validation_options)[0].resource_record_type
-  ttl             = "300"
-  records         = [sort(aws_acm_certificate.acm_certificate.domain_validation_options[*].resource_record_value)[0]]
+resource "aws_route53_record" "validation_records" {
+  for_each = {
+    for dvo in aws_acm_certificate.acm_certificate.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
   allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 60
+  type            = each.value.type
+  zone_id         = aws_route53_zone.hosting_zone.zone_id
 }

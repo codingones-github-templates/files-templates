@@ -16,8 +16,17 @@ resource "aws_ecs_cluster_capacity_providers" "fargate" {
   }
 }
 
+data "external" "get_ecr_image_tags" {
+  program = ["bash", "-c", "aws ecr list-images --repository-name ${aws_ecr_repository.api.name} --region us-east-1 --query 'imageIds[].imageTag' --output json | jq -c -r ."]
+}
+
+locals {
+  ecr_image_tags = jsondecode(data.external.get_ecr_image_tags.result.stdout)
+  has_image_tags = length(local.ecr_image_tags) > 0
+}
+
 resource "aws_ecs_task_definition" "task_definition" {
-  count = length(data.aws_ecr_image.api_image.image_tags) > 0 ? 1 : 0
+  count = local.has_image_tags ? 1 : 0
 
   family             = "node-api"
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
