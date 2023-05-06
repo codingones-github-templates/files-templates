@@ -4,9 +4,9 @@ locals {
       hcl   = false
       value = aws_vpc.vpc.id
     }
-    "internet_gateway_id" = {
+    "public_route_table_id" = {
       hcl   = false
-      value = aws_internet_gateway.igw.id
+      value = aws_route_table.public_route_table.id
     }
     "private_subnets_ids" = {
       hcl   = true
