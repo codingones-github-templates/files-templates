@@ -16,6 +16,11 @@ on:
         type: string
         required: false
         default: ''
+  #push:
+  #  branches:
+  #    - main
+  repository_dispatch:
+    types: [remote-trigger]
 
 jobs:
   terraform:
