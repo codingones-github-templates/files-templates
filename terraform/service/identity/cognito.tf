@@ -69,14 +69,10 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   explicit_auth_flows = ["ALLOW_REFRESH_TOKEN_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_CUSTOM_AUTH", "ALLOW_USER_SRP_AUTH"]
 }
 
+resource "aws_cognito_user_group" "groups" {
+  for_each = var.user_groups
 
-resource "aws_cognito_user_group" "admin" {
-  name         = var.user_group_admin
-  user_pool_id = aws_cognito_user_pool.main.id
-}
-
-
-resource "aws_cognito_user_group" "user" {
-  name         = var.user_group_user
+  name         = each.value.name
+  description  = each.value.description
   user_pool_id = aws_cognito_user_pool.main.id
 }

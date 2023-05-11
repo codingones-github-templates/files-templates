@@ -30,18 +30,19 @@ variable "domain_name" {
   default     = ""
 }
 
-# todo passer en map pour faire un foreach avec les propriétés du groupe)
-variable "user_group_admin" {
-  type        = string
-  nullable    = false
-  description = "The user group admin name"
-  default     = "admin"
-}
-variable "user_group_user" {
-  type        = string
-  nullable    = false
-  description = "The user group user name"
-  default     = "user"
+variable "user_groups" {
+  description = "Map of user groups"
+  type = map(object({
+    name        = string
+    description = string
+  }))
+  nullable = true
+  default = {
+    user = {
+      name        = "user"
+      description = "The default user group for authenticated users"
+    }
+  }
 }
 
 variable "ses_configuration_set_name" {

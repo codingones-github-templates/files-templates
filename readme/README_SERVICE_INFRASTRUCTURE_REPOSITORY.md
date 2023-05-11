@@ -1,15 +1,11 @@
 <!-- VARIABLES
 SERVICE
-PROJECT
-REPOSITORY
-ORGANIZATION
 -->
-
 # SERVICE infrastructure
 
 ## À propos
 
-SERVICE infrastructure décrit par le code l'infrastructure à provisionner pour ... de PROJECT.
+SERVICE infrastructure décrit par le code un aspect de l'infrastructure à provisionner pour PROJECT.
 
 ## Table des matières
 

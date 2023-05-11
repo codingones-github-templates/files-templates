@@ -69,6 +69,7 @@ resource "aws_s3_bucket_policy" "logs" {
         "Effect" : "Allow",
         "Principal" : {
           "Service" : "cloudfront.amazonaws.com"
+          "AWS" : "${aws_cloudfront_origin_access_identity.client.iam_arn}"
         },
         "Action" : [
           "s3:GetBucketAcl",
@@ -76,7 +77,7 @@ resource "aws_s3_bucket_policy" "logs" {
           "s3:PutObject",
           "s3:PutObjectAcl"
         ],
-        "Resource" : ["${aws_s3_bucket.logs.arn}/*"]
+        "Resource" : ["${aws_s3_bucket.logs.arn}/*", "${aws_s3_bucket.logs.arn}"]
       }
     ]
     }
