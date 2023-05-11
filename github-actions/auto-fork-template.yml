@@ -1,0 +1,28 @@
+name: Fork template repository
+
+on:
+  push:
+
+jobs:
+  fork_repository:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
+
+      - name: Fork Repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+          SOURCE_REPO: "TEMPLATE_REPOSITORY"
+        run: |
+          git remote -v
+          git remote add upstream https://github.com/$SOURCE_REPO.git
+          git fetch upstream
+          git branch --set-upstream-to=upstream/main main
+          git remote -v
+          gh repo sync ${{ env.github_repository }} -b main --force
+          git push origin main --force
