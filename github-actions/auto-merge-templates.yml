@@ -1,0 +1,30 @@
+name: Merge Repositories
+
+on:
+  push:
+
+jobs:
+  merge_template_repositories:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout template repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
+          repository: TEMPLATE_REPOSITORY_1
+
+      - name: Checkout rebase branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git checkout main
+          git remote add template2 https://github.com/TEMPLATE_REPOSITORY_2.git
+          git remote remove origin
+          git remote add origin https://github.com/${{ github.repository }}.git
+          git fetch template2
+          git rebase -Xours template2/main
+          git push origin main --force
