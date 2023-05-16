@@ -2,6 +2,7 @@ name: Merge Repositories
 
 on:
   push:
+  workflow_dispatch:
 
 jobs:
   merge_template_repositories:
