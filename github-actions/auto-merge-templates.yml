@@ -27,5 +27,5 @@ jobs:
           git remote remove origin
           git remote add origin https://github.com/${{ github.repository }}.git
           git fetch template2
-          git rebase -Xours template2/main
+          git rebase -Xtheirs template2/main
           git push origin main --force
