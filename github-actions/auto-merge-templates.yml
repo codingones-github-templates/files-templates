@@ -4,6 +4,10 @@ on:
   push:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   merge_template_repositories:
     runs-on: ubuntu-latest
@@ -27,5 +31,5 @@ jobs:
           git remote remove origin
           git remote add origin https://github.com/${{ github.repository }}.git
           git fetch template2
-          git merge -X theirs template2/main
+          git merge --allow-unrelated-histories -X theirs template2/main
           git push origin main --force
