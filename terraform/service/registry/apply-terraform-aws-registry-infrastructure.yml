@@ -2,7 +2,7 @@
 #PROJECT
 #SERVICE
 #-->
-name: 'Apply changes to SERVICE-infrastructure'
+name: 'Apply changes to SERVICE'
 
 concurrency:
   group: ${{ github.ref }}
@@ -16,15 +16,13 @@ on:
         type: string
         required: false
         default: ''
-  #push:
-  #  branches:
-  #    - main
-  repository_dispatch:
-    types: [remote-trigger]
+#  push:
+#    branches:
+#      - 'main'
 
 jobs:
   terraform:
-    name: 'Terraform checks & apply'
+    name: 'Terraform'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -59,25 +57,40 @@ jobs:
           echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false -replace=${{ inputs.force-replace }}
 
-  notify-discord:
+  trigger-api:
     needs:
       - terraform
     runs-on: ubuntu-latest
-    if: secrets.DISCORD_NOTIFY_HOOK_URL != ''
     steps:
-      - name: Prepare payload
-        run: >-
-          (jq -r '.' <<< '
-          {
-            "username": "PROJECT Bot",
-            "content": "SERVICE-infrastructure has been updated"
-          }'
-          ) > payload
+      - name: Trigger api
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.PAT }}
+          repository: ${{ github.repository_owner }}/api-infrastructure
+          event-type: remote-trigger
 
-      - name: Send notification
-        run: >-
-          curl
-          --header "Content-Type:application/json"
-          --request POST
-          --data @payload
-          ${{ secrets.DISCORD_NOTIFY_HOOK_URL }}
+  notify-on-error:
+    needs:
+      - terraform
+    if: ${{ always() && (contains(needs.terraform.result, 'failure') || contains(needs.terraform.result, 'cancelled')) }}
+    uses: codingones/github-actions-workflows/.github/workflows/notify-discord.yml@main
+    with:
+      bot-username: Failures Bot
+      notification-content: Failed to update the service **${{ github.repository }}**
+      embed-title: Go to the workflow
+      embed-url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    secrets:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_FAILURES_WEBHOOK }}
+
+  notify-on-success:
+    needs:
+      - terraform
+    if: ${{ always() && needs.terraform.result == 'success' }}
+    uses: codingones/github-actions-workflows/.github/workflows/notify-discord.yml@main
+    with:
+      bot-username: Successes Bot
+      notification-content: The service **${{ github.repository }}** has been updated !
+      embed-title: Go to the workflow
+      embed-url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    secrets:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_SUCCESSES_WEBHOOK }}

@@ -2,7 +2,7 @@
 #PROJECT
 #SERVICE
 #-->
-name: 'Apply changes to SERVICE-infrastructure'
+name: 'Apply changes to SERVICE'
 
 concurrency:
   group: ${{ github.ref }}
