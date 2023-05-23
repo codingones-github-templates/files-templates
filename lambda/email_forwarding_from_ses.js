@@ -1,7 +1,7 @@
 //<!-- VARIABLES
-//DOMAIN
-//BUCKET
-//EMAILS
+//__DOMAIN
+//__BUCKET
+//__EMAILS
 //-->
 "use strict";
 
@@ -11,11 +11,11 @@ exports.handler = function(event, context, callback) {
     // See aws-lambda-ses-forwarder/index.js for all options.
     var overrides = {
         config: {
-            fromEmail: "noreply@DOMAIN",
-            emailBucket: "BUCKET",
+            fromEmail: "noreply@__DOMAIN",
+            emailBucket: "__BUCKET",
             emailKeyPrefix: "",
             forwardMapping: {
-                "@DOMAIN": EMAILS
+                "@__DOMAIN": __EMAILS
             }
         }
     };

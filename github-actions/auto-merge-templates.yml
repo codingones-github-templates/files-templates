@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  templated_files_variables: "TEMPLATED_FILES_VARIABLES"
+  templated_files_variables: "__TEMPLATED_FILES_VARIABLES"
 
 jobs:
   merge_template_repositories:
@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
-          repository: TEMPLATE_REPOSITORY_1
+          repository: __TEMPLATE_REPOSITORY_1
 
       - name: Checkout rebase branch
         env:
@@ -30,7 +30,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git checkout main
-          git remote add template2 https://github.com/TEMPLATE_REPOSITORY_2.git
+          git remote add template2 https://github.com/__TEMPLATE_REPOSITORY_2.git
           git remote remove origin
           git remote add origin https://github.com/${{ github.repository }}.git
           git fetch template2
@@ -46,5 +46,10 @@ jobs:
             find . -type f \( -name "*.json" -o -name "*.tf" -o -name "*.html" -o -name "*.md" -o -name "*.ts" \) -exec sed -i "s/${placeholder}/${replacement}/g" {} \;
           done
 
-      - name: Push updated files
+      - name: Commit and push updated files
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add . 
+          git commit -m "feat: replace templated files variables"
           git push origin main --force

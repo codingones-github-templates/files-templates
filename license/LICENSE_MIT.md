@@ -1,9 +1,9 @@
 <!-- VARIABLES
-OWNER
+__OWNER
 -->
 MIT License
 
-Copyright (c) 2022 OWNER
+Copyright (c) 2022 __OWNER
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  templated_files_variables: "TEMPLATED_FILES_VARIABLES"
+  templated_files_variables: "__TEMPLATED_FILES_VARIABLES"
 
 jobs:
   fork_repository:
@@ -24,7 +24,7 @@ jobs:
       - name: Fork Repository
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
-          SOURCE_REPO: "TEMPLATE_REPOSITORY"
+          SOURCE_REPO: "__TEMPLATE_REPOSITORY"
         run: |
           git remote -v
           git remote add upstream https://github.com/$SOURCE_REPO.git
@@ -43,5 +43,10 @@ jobs:
             find . -type f \( -name "*.json" -o -name "*.tf" -o -name "*.html" -o -name "*.md" -o -name "*.ts" \) -exec sed -i "s/${placeholder}/${replacement}/g" {} \;
           done
 
-      - name: Push updated files
+      - name: Commit and push updated files
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add . 
+          git commit -m "feat: replace templated files variables"
           git push origin main --force

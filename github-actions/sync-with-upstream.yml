@@ -1,5 +1,5 @@
 #<!-- VARIABLES
-#UPSTREAM
+#__UPSTREAM
 #-->
 name: Sync with upstream
 
@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
-          repository: "UPSTREAM"
+          repository: "__UPSTREAM"
 
       - name: Fetch current repos and rebase main to the upstream branch
         env:

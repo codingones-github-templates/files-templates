@@ -1,13 +1,13 @@
 <!-- VARIABLES
-MODULE_NAME
-ABOUT
+__MODULE_NAME
+__ABOUT
 -->
 
-# MODULE_NAME module
+# __MODULE_NAME module
 
 ## About
 
-ABOUT
+__ABOUT
 
 ## TOC
 

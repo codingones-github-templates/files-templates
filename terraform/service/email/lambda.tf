@@ -2,9 +2,9 @@ module "templated_lambda" {
   source       = "github.com/codingones/terraform-remote-template-renderer"
   template_url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.js"
   template_variables = {
-    EMAILS = var.domain_email_forward_addresses
-    DOMAIN = var.domain_name
-    BUCKET = local.ses_bucket_name
+    __EMAILS = var.domain_email_forward_addresses
+    __DOMAIN = var.domain_name
+    __BUCKET = local.ses_bucket_name
   }
 }
 

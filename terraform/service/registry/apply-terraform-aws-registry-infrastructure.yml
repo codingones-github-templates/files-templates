@@ -1,8 +1,8 @@
 #<!-- VARIABLES
-#PROJECT
-#SERVICE
+#__PROJECT
+#__SERVICE
 #-->
-name: 'Apply changes to SERVICE'
+name: 'Apply changes to __SERVICE'
 
 concurrency:
   group: ${{ github.ref }}

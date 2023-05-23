@@ -1,15 +1,15 @@
 #<!-- VARIABLES
-#TERRAFORM_ORGANIZATION
-#TERRAFORM_WORKSPACE
-#AWS_PROVIDER_REGION
+#__TERRAFORM_ORGANIZATION
+#__TERRAFORM_WORKSPACE
+#__AWS_PROVIDER_REGION
 #-->
 terraform {
   backend "remote" {
     hostname     = "app.terraform.io"
-    organization = "TERRAFORM_ORGANIZATION"
+    organization = "__TERRAFORM_ORGANIZATION"
 
     workspaces {
-      name = "TERRAFORM_WORKSPACE"
+      name = "__TERRAFORM_WORKSPACE"
     }
   }
 
@@ -24,7 +24,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "AWS_PROVIDER_REGION"
+  region = "__AWS_PROVIDER_REGION"
 }
 
 provider "tfe" {

@@ -1,15 +1,15 @@
 <!-- VARIABLES
-SERVICE
-PROJECT
-REPOSITORY
-ORGANIZATION
+__SERVICE
+__PROJECT
+__REPOSITORY
+__ORGANIZATION
 -->
 
-# PROJECT Api
+# __PROJECT Api
 
 ## À propos
 
-Ce dépot est responsable de la partie applicative serveur du projet PROJECT.
+Ce dépot est responsable de la partie applicative serveur du projet __PROJECT.
 
 ## Table des matières
 
@@ -99,7 +99,7 @@ Le projet n'est actuellement pas ouvert à la contribution.
 #### CI/CD
 
 - [Github Actions](https://docs.github.com/en/actions) est l'outil d'intégration et de déploiement continu intégré à GitHub
-    - L'historique des déploiements est disponible [sous l'onglet Actions](https://github.com/ORGANIZATION/REPOSITORY/actions/)
+    - L'historique des déploiements est disponible [sous l'onglet Actions](https://github.com/__ORGANIZATION/__REPOSITORY/actions/)
   
 - Secrets du dépôt :
     - `AWS_ACCESS_KEY_ID` : L'identifiant de la clef du compte programmatique qui permet de pousser l'image du conteneur sur ECR
@@ -108,8 +108,8 @@ Le projet n'est actuellement pas ouvert à la contribution.
         - Provisionné par le organization.deployer du compte AWS parent de l'organization
 
 - [AWS](https://aws.amazon.com/) est la plateforme de services Cloud proposée par Amazon.
-    - Utilisateur : `PROJECT.SERVICE.ci`
-    - Groupe : `SERVICE.deployer`
+    - Utilisateur : `__PROJECT.__SERVICE.ci`
+    - Groupe : `__SERVICE.deployer`
   
 - [ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html) Amazon Elastic Container Registry (Amazon ECR) est un service de registre d'images de conteneur géré par AWS.
 

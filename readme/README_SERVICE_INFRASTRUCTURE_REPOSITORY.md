@@ -1,11 +1,13 @@
 <!-- VARIABLES
-SERVICE
+__SERVICE
+__ORGANIZATION
+__REPOSITORY
 -->
-# SERVICE infrastructure
+# __SERVICE infrastructure
 
 ## À propos
 
-SERVICE infrastructure décrit par le code un aspect de l'infrastructure à provisionner pour PROJECT.
+__SERVICE infrastructure décrit par le code un aspect de l'infrastructure à provisionner pour __PROJECT.
 
 ## Table des matières
 
@@ -90,7 +92,7 @@ Pour que les modifications de la description de l'infrastructure soient appliqu�
 #### CI
 
 - [Github Actions](https://docs.github.com/en/actions) est l'outil d'intégration et de déploiement continu intégré à GitHub
-    - L'historique des déploiements est disponible [sous l'onglet Actions](https://github.com/ORGANIZATION/REPOSITORY/actions/)
+    - L'historique des déploiements est disponible [sous l'onglet Actions](https://github.com/__ORGANIZATION/__REPOSITORY/actions/)
 - Secrets du dépôt :
     - `TF_API_TOKEN` : Le token d'api Terraform Cloud qui permet à la CI d'opérer des actions sur Terraform Cloud
       - Provisionné par le organization.deployer du compte AWS parent de l'organization
@@ -98,12 +100,12 @@ Pour que les modifications de la description de l'infrastructure soient appliqu�
 #### Déploiement
 
 - [AWS](https://aws.amazon.com/) est la plateforme de services Cloud proposée par Amazon.
-    - Utilisateur : `PROJECT.SERVICE.infrastructure`
-    - Groupe : `SERVICE.deployer`
+    - Utilisateur : `__PROJECT.__SERVICE.infrastructure`
+    - Groupe : `__SERVICE.deployer`
 - [Terraform Cloud](https://app.terraform.io/) est la plateforme proposée par HashiCorp pour administrer les modifications d'infrastructure
-    - Organisation : [ORGANIZATION](https://app.terraform.io/app/ORGANIZATION/workspaces)
-    - Workspaces : `SERVICE`
-        - [SERVICE-production](https://app.terraform.io/app/ORGANIZATION/workspaces/SERVICE)
+    - Organisation : [__ORGANIZATION](https://app.terraform.io/app/__ORGANIZATION/workspaces)
+    - Workspaces : `__SERVICE`
+        - [__SERVICE](https://app.terraform.io/app/__ORGANIZATION/workspaces/__SERVICE)
     - Variables
         - `AWS_SECRET_ACCESS_KEY`
             - Value : Sensitive - write only
