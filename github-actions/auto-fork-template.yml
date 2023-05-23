@@ -1,7 +1,14 @@
-name: Fork template repository
+name: Fork template repository and replace variables in in resulting repository files
 
 on:
   push:
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  templated_files_variables: "TEMPLATED_FILES_VARIABLES"
 
 jobs:
   fork_repository:
@@ -25,4 +32,16 @@ jobs:
           git branch --set-upstream-to=upstream/main main
           git remote -v
           gh repo sync ${{ env.github_repository }} -b main --force
+
+      - name: Replace variables placeholders in templated (.json/.tf/.html/.md/.ts) files
+        run: |
+          IFS=', ' read -r -a pairs <<< "${{ env.templated_files_variables }}"
+          for pair in "${pairs[@]}"; do
+            IFS='/' read -r -a kv <<< "$pair"
+            placeholder=${kv[0]}
+            replacement=${kv[1]}
+            find . -type f \( -name "*.json" -o -name "*.tf" -o -name "*.html" -o -name "*.md" -o -name "*.ts" \) -exec sed -i "s/${placeholder}/${replacement}/g" {} \;
+          done
+
+      - name: Push updated files
           git push origin main --force

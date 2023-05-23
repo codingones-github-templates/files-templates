@@ -1,4 +1,4 @@
-name: Merge Repositories
+name: Merge Repositories and replace template variables in resulting repository files
 
 on:
   push:
@@ -7,6 +7,9 @@ on:
 concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  templated_files_variables: "TEMPLATED_FILES_VARIABLES"
 
 jobs:
   merge_template_repositories:
@@ -32,4 +35,16 @@ jobs:
           git remote add origin https://github.com/${{ github.repository }}.git
           git fetch template2
           git merge --allow-unrelated-histories -X theirs template2/main
+
+      - name: Replace variables placeholders in templated (.json/.tf/.html/.md/.ts) files
+        run: |
+          IFS=', ' read -r -a pairs <<< "${{ env.templated_files_variables }}"
+          for pair in "${pairs[@]}"; do
+            IFS='/' read -r -a kv <<< "$pair"
+            placeholder=${kv[0]}
+            replacement=${kv[1]}
+            find . -type f \( -name "*.json" -o -name "*.tf" -o -name "*.html" -o -name "*.md" -o -name "*.ts" \) -exec sed -i "s/${placeholder}/${replacement}/g" {} \;
+          done
+
+      - name: Push updated files
           git push origin main --force
