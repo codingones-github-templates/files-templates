@@ -60,18 +60,6 @@ jobs:
           echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false -replace=${{ inputs.force-replace }}
 
-  trigger-api:
-    needs:
-      - terraform
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger api
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.PAT }}
-          repository: ${{ github.repository_owner }}/api-infrastructure
-          event-type: remote-trigger
-
   notify-on-error:
     needs:
       - terraform
